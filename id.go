@@ -17,3 +17,5 @@ func NewID() ID {
 func (id ID) Eq(newId ID) bool {
 	return strings.EqualFold(string(id), string(newId))
 }
+
+const RootID ID = "11111111-1111-1111-1111-111111111111"
