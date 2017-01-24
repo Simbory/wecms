@@ -60,6 +60,14 @@ func (item *Item) Template() *Template {
 }
 
 func (item *Item) Value(fieldName string) string {
+	template := item.Template()
+	if template == nil {
+		return ""
+	}
+	field := template.GetField(fieldName)
+	if field == nil {
+		return ""
+	}
 	var value string
 	var got bool
 	if len(item.Values) > 0 {
@@ -71,14 +79,6 @@ func (item *Item) Value(fieldName string) string {
 		}
 	}
 	if !got {
-		template := item.Template()
-		if template == nil {
-			return ""
-		}
-		field := template.GetField(fieldName)
-		if field == nil {
-			return ""
-		}
 		return field.DefaultValue
 	}
 	return value
