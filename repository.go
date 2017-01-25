@@ -7,8 +7,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type repCache map[ID]interface{}
-
 type Repository struct {
 	name          string
 	conn          string
@@ -99,6 +97,15 @@ func (rep *Repository) GetItem(itemId ID) *Item {
 			rep.itemCache[itemId] = item
 		}
 		return item
+	}
+}
+
+func (rep *Repository) ClearCache() {
+	if rep.itemCache != nil {
+		rep.itemCache.clear()
+	}
+	if rep.templateCache != nil {
+		rep.templateCache.clear()
 	}
 }
 
