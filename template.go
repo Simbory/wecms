@@ -9,6 +9,8 @@ type TemplateField struct {
 	Mandatory       bool
 	ValidationRegex string
 	DefaultValue    string
+
+	Section         *TemplateSection
 }
 
 type TemplateSection struct {
@@ -22,6 +24,7 @@ func (s *TemplateSection) GetField(name string) *TemplateField {
 	}
 	for _, f := range s.Fields {
 		if f.Name == name {
+			f.Section = s
 			return &f
 		}
 	}
@@ -31,10 +34,13 @@ func (s *TemplateSection) GetField(name string) *TemplateField {
 type Template struct {
 	Id         ID `bson:"__id"`
 	Name       string
+	Type       string
+	Container  ID
 	CreateTime time.Time
 	UpdateTime time.Time
 	CreatedBy  string
 	UpdatedBy  string
+	Bases      []ID
 	Sections   []TemplateSection
 }
 

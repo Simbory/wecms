@@ -39,7 +39,7 @@ func (rep *Repository) getTemplate(id ID) (*Template, error) {
 	db := session.DB(rep.dbName)
 	coll := db.C("templates")
 	var t Template
-	err := coll.FindId(id).One(&t)
+	err := coll.FindId(bson.M{"__id": id, "Type":"Template"}).One(&t)
 	if err != nil {
 		return nil, err
 	}
@@ -132,6 +132,10 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 	} else {
 		return nil, nil
 	}
+}
+
+func (rep *Repository) Editing() *RepositoryEditing {
+	return &RepositoryEditing{rep}
 }
 
 var reps map[string]*Repository
