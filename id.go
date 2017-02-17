@@ -28,7 +28,7 @@ func newIdStr() string {
 	hex.Encode(strBuf[19:23], idBytes[8:10])
 	strBuf[23] = '-'
 	hex.Encode(strBuf[24:], idBytes[10:])
-	return string(strBuf)
+	return string(strBuf[:])
 }
 
 // NewID create a new random ID

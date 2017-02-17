@@ -12,7 +12,7 @@ const (
 )
 
 type User struct {
-	Id        ID `bson:"__id"`
+	Id        ID `bson:"_id"`
 	Email     string
 	FullName  string
 	FirstName string

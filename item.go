@@ -6,7 +6,7 @@ type ItemValue struct {
 }
 
 type Item struct {
-	Id         ID `bson:"__id"`
+	Id         ID `bson:"_id"`
 	Name       string
 	TemplateId ID
 	ParentId   ID

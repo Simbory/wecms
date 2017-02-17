@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"errors"
 	"gopkg.in/mgo.v2/bson"
+	"time"
 )
 
 type Repository struct {
@@ -36,12 +37,12 @@ func (rep *Repository) getTemplate(id ID) (*Template, error) {
 
 	db := session.DB(rep.dbName)
 	coll := db.C("templates")
-	var t Template
-	err := coll.FindId(bson.M{"__id": id, "Type":"Template"}).One(&t)
+	var t *Template
+	err := coll.Find(bson.M{"_id": id, "type":"Template"}).One(t)
 	if err != nil {
 		return nil, err
 	}
-	return &t, nil
+	return t, nil
 }
 
 // GetTemplate get the template from repository cache. If the template cannot be found in cache, try to get the template
@@ -62,6 +63,58 @@ func (rep *Repository) GetTemplate(templateId ID) *Template {
 		}
 		return temp
 	}
+}
+
+func (rep *Repository) saveTemplate(t *Template) error {
+	if t == nil {
+		return errParamNil("t")
+	}
+	if len(t.Id) < 1 {
+		t.Id = NewID()
+	}
+	if len(t.Name) == 0 {
+		return errors.New("The name of the template cannot be empty.")
+	}
+	t.Type = "Template"
+	t.UpdateTime = time.Now()
+	if len(t.Container) == 0 {
+		t.Container = RootID
+	}
+	session := rep.getSession()
+	if session == nil {
+		return errors.New("the data session of this repository is nil")
+	}
+	defer session.Close()
+
+	db := session.DB(rep.dbName)
+	coll := db.C("templates")
+
+	count,err := coll.FindId(t.Id).Count()
+	if err != nil {
+		return err
+	}
+	if count > 0 {
+		err = coll.UpdateId(t.Id, t)
+		if err != nil {
+			return err
+		}
+	} else {
+		t.CreateTime = t.UpdateTime
+		err = coll.Insert(t)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (rep *Repository) SaveTemplate(t *Template) error {
+	err := rep.saveTemplate(t)
+	if err != nil {
+		return err
+	}
+	rep.templateCache[t.Id] = t
+	return nil
 }
 
 // getItem get item from database by item ID

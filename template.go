@@ -3,6 +3,7 @@ package wecms
 import "time"
 
 type TemplateField struct {
+	Id              ID
 	Name            string
 	DisplayTitle    string
 	FieldType       string
@@ -10,12 +11,12 @@ type TemplateField struct {
 	ValidationRegex string
 	DefaultValue    string
 
-	Section         *TemplateSection
+	section *TemplateSection
 }
 
 type TemplateSection struct {
 	Name   string
-	Fields []TemplateField
+	Fields []*TemplateField
 }
 
 func (s *TemplateSection) GetField(name string) *TemplateField {
@@ -24,15 +25,15 @@ func (s *TemplateSection) GetField(name string) *TemplateField {
 	}
 	for _, f := range s.Fields {
 		if f.Name == name {
-			f.Section = s
-			return &f
+			f.section = s
+			return f
 		}
 	}
 	return nil
 }
 
 type Template struct {
-	Id         ID `bson:"__id"`
+	Id         ID `bson:"_id"`
 	Name       string
 	Type       string
 	Container  ID
@@ -41,7 +42,7 @@ type Template struct {
 	CreatedBy  string
 	UpdatedBy  string
 	Bases      []ID
-	Sections   []TemplateSection
+	Sections   []*TemplateSection
 }
 
 func (t *Template) GetSection(name string) *TemplateSection {
@@ -50,7 +51,7 @@ func (t *Template) GetSection(name string) *TemplateSection {
 	}
 	for _, section := range t.Sections {
 		if section.Name == name {
-			return &section
+			return section
 		}
 	}
 	return nil

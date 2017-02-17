@@ -3,7 +3,7 @@ package wecms
 import "time"
 
 type TemplateEntry struct {
-	Id         ID `bson:"__id"`
+	Id         ID `bson:"_id"`
 	Name       string
 	Type       string
 	Container  ID
