@@ -39,6 +39,9 @@ func (rep *Repository) getTemplate(id ID) (*Template, error) {
 	var t *Template
 	err := coll.Find(bson.M{"_id": id, "type":"Template"}).One(t)
 	if err != nil {
+		if err == mgo.ErrNotFound {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return t, nil
@@ -74,29 +77,32 @@ func (rep *Repository) getItem(id ID) (*Item, error) {
 
 	db := session.DB(rep.dbName)
 	coll := db.C("items")
-	var item Item
-	err := coll.FindId(id).One(&item)
+	var item *Item
+	err := coll.FindId(id).One(item)
 	if err != nil {
+		if err == mgo.ErrNotFound {
+			return nil, nil
+		}
 		return nil, err
 	}
-	return &item, nil
+	return item, nil
 }
 
-func (rep *Repository) GetItem(itemId ID) *Item {
+func (rep *Repository) GetItem(itemId ID) (*Item,error) {
 	if rep.itemCache == nil {
 		rep.itemCache = make(repCache, rep.itemCacheSize)
 	}
 	if item,ok := rep.itemCache[itemId]; ok {
-		return item.(*Item)
+		return item.(*Item), nil
 	} else {
 		item,err := rep.getItem(itemId)
 		if err != nil {
-			return nil
-		} else {
+			return nil,err
+		} else if item != nil {
 			item.currentRep = rep
 			rep.itemCache[itemId] = item
 		}
-		return item
+		return item, nil
 	}
 }
 
@@ -119,7 +125,7 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 	db := session.DB(rep.dbName)
 	coll := db.C("items")
 	items := []Item{}
-	err := coll.Find(bson.M{"ParentId": parentId}).All(&items)
+	err := coll.Find(bson.M{"parentid": parentId}).All(&items)
 	if err != nil {
 		return nil, err
 	}
@@ -129,8 +135,8 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 			if len(item.Id) == 0 {
 				continue
 			}
-			newItem := rep.GetItem(item.Id)
-			if newItem == nil {
+			newItem,err := rep.GetItem(item.Id)
+			if newItem == nil || err != nil {
 				continue
 			}
 			results = append(results, newItem)
