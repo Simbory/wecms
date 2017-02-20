@@ -14,6 +14,8 @@ const (
 type User struct {
 	Id        ID `bson:"_id"`
 	Email     string
+	UserName  string
+	Password  string
 	FullName  string
 	FirstName string
 	LastName  string

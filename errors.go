@@ -21,3 +21,7 @@ func errParamEmpty(paramName string) error {
 func errParamNil(paramName string) error {
 	return fmt.Errorf("The parameter '%s' cannot be nil", paramName)
 }
+
+func errSessionNil(dbName string) error {
+	return fmt.Errorf("the data session of this repository is nil. Database: %s", dbName)
+}
