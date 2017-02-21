@@ -4,6 +4,8 @@ import (
 	"errors"
 	"time"
 	"fmt"
+	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 )
 
 type RepositoryEditing struct {
@@ -63,6 +65,29 @@ func (editing *RepositoryEditing) SaveTemplate(t *Template) error {
 	}
 	editing.currentRep.templateCache[t.Id] = t
 	return nil
+}
+
+func (editing *RepositoryEditing) SaveTemplateEntry(entry *TemplateEntry) error {
+	// TODO: add code here
+	return nil
+}
+
+func (editing *RepositoryEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
+	session := editing.currentRep.getSession()
+	if session == nil {
+		return nil, errSessionNil(editing.currentRep.dbName)
+	}
+	defer session.Close()
+	coll := session.DB(editing.currentRep.dbName).C("templates")
+	var entries []*TemplateEntry
+	err := coll.Find(bson.M{"container": parentId}).All(&entries)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			return nil,nil
+		}
+		return nil, err
+	}
+	return entries, nil
 }
 
 func (editing *RepositoryEditing) saveItem(item *Item) error {
