@@ -74,6 +74,7 @@ func (item *Item) Value(fieldName string) string {
 			if valueSetting.FieldName == fieldName {
 				got = true
 				value = valueSetting.Value
+				break
 			}
 		}
 	}
