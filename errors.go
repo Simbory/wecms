@@ -23,5 +23,5 @@ func errParamNil(paramName string) error {
 }
 
 func errSessionNil(dbName string) error {
-	return fmt.Errorf("the data session of this repository is nil. Database: %s", dbName)
+	return fmt.Errorf("the data session of this repository is nil. repository: %s", dbName)
 }

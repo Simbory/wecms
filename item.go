@@ -10,7 +10,7 @@ type Item struct {
 	Name       string
 	TemplateId ID
 	ParentId   ID
-	Values     []ItemValue
+	Values     []*ItemValue
 
 	currentRep *Repository
 	children   []*Item
@@ -34,31 +34,30 @@ func (item *Item) CurrentRepository() *Repository {
 	return item.currentRep
 }
 
-func (item *Item) HasChildren() bool {
-	return item.ChildrenCount() > 0
-}
-
-func (item *Item) ChildrenCount() int {
-	item.tryLoadChildren()
-	return len(item.children)
-}
-
+// Children get the child items
 func (item *Item) Children() []*Item {
 	item.tryLoadChildren()
 	return item.children
 }
 
+// Parent get the parent item of current item
 func (item *Item) Parent() *Item {
 	if item.Id.Eq(RootID) {
 		return nil
 	}
-	return item.currentRep.GetItem(item.ParentId)
+	p,err := item.currentRep.GetItem(item.ParentId)
+	if err != nil {
+		return nil
+	}
+	return p
 }
 
+// Template get the template of current item
 func (item *Item) Template() *Template {
 	return item.currentRep.GetTemplate(item.TemplateId)
 }
 
+// Value get the value by field name
 func (item *Item) Value(fieldName string) string {
 	template := item.Template()
 	if template == nil {

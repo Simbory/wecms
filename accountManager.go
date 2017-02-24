@@ -58,12 +58,11 @@ func (accMng *AccountManager) NewUser(email, userName, pwd, fullName, firstName,
 
 	session := accMng.currentRep.getSession()
 	if session == nil {
-		return errSessionNil(accMng.currentRep.dbName)
+		return errSessionNil(accMng.currentRep.name)
 	}
 	defer session.Close()
 
-	db := session.DB(accMng.currentRep.dbName)
-	coll := db.C("users")
+	coll := session.DB(accMng.currentRep.dbName).C("users")
 	return coll.Insert(user)
 }
 
@@ -77,14 +76,16 @@ func (accMng *AccountManager) encryptPad(pwd string) string {
 }
 
 func (accMng *AccountManager) GetUserByEmail(email string) (*User,error) {
+	if len(email) == 0 {
+		return nil, errParamEmpty("email")
+	}
 	session := accMng.currentRep.getSession()
 	if session == nil {
-		return nil, errSessionNil(accMng.currentRep.dbName)
+		return nil, errSessionNil(accMng.currentRep.name)
 	}
 	defer session.Close()
-	db := session.DB(accMng.currentRep.dbName)
-	coll := db.C("users")
 
+	coll := session.DB(accMng.currentRep.dbName).C("users")
 	var user *User
 	err := coll.Find(bson.M{"email": email}).One(user)
 	if err != nil {

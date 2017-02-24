@@ -34,8 +34,7 @@ func (rep *Repository) getTemplate(id ID) (*Template, error) {
 	}
 	defer session.Close()
 
-	db := session.DB(rep.dbName)
-	coll := db.C("templates")
+	coll := session.DB(rep.dbName).C("templates")
 	var t *Template
 	err := coll.Find(bson.M{"_id": id, "type":"Template"}).One(t)
 	if err != nil {
@@ -75,8 +74,7 @@ func (rep *Repository) getItem(id ID) (*Item, error) {
 	}
 	defer session.Close()
 
-	db := session.DB(rep.dbName)
-	coll := db.C("items")
+	coll := session.DB(rep.dbName).C("items")
 	var item *Item
 	err := coll.FindId(id).One(item)
 	if err != nil {
@@ -122,8 +120,7 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 	}
 	defer session.Close()
 
-	db := session.DB(rep.dbName)
-	coll := db.C("items")
+	coll := session.DB(rep.dbName).C("items")
 	items := []Item{}
 	err := coll.Find(bson.M{"parentid": parentId}).All(&items)
 	if err != nil {

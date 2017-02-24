@@ -31,12 +31,11 @@ func (editing *RepositoryEditing) saveTemplate(t *Template) error {
 	}
 	session := editing.currentRep.getSession()
 	if session == nil {
-		return errSessionNil(editing.currentRep.dbName)
+		return errSessionNil(editing.currentRep.name)
 	}
 	defer session.Close()
 
-	db := session.DB(editing.currentRep.dbName)
-	coll := db.C("templates")
+	coll := session.DB(editing.currentRep.dbName).C("templates")
 
 	count,err := coll.FindId(t.Id).Count()
 	if err != nil {
@@ -68,14 +67,44 @@ func (editing *RepositoryEditing) SaveTemplate(t *Template) error {
 }
 
 func (editing *RepositoryEditing) SaveTemplateEntry(entry *TemplateEntry) error {
-	// TODO: add code here
+	if entry == nil {
+		return errParamNil("entry")
+	}
+	session := editing.currentRep.getSession()
+	if session == nil {
+		return errSessionNil(editing.currentRep.name)
+	}
+	defer session.Close()
+
+	coll := session.DB(editing.currentRep.dbName).C("templates")
+	if len(entry.Id) == 0 {
+		entry.Id = NewID()
+		err := coll.Insert(entry)
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		count,err := coll.FindId(entry.Id).Count()
+		if err != nil {
+			return err
+		}
+		if count > 0 {
+			err = coll.UpdateId(entry.Id, entry)
+		} else {
+			err = coll.Insert(entry)
+		}
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 func (editing *RepositoryEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
 	session := editing.currentRep.getSession()
 	if session == nil {
-		return nil, errSessionNil(editing.currentRep.dbName)
+		return nil, errSessionNil(editing.currentRep.name)
 	}
 	defer session.Close()
 	coll := session.DB(editing.currentRep.dbName).C("templates")
@@ -90,6 +119,7 @@ func (editing *RepositoryEditing) ChildTemplateEntries(parentId ID) ([]*Template
 	return entries, nil
 }
 
+// saveItem save the item data to mongodb
 func (editing *RepositoryEditing) saveItem(item *Item) error {
 	if item == nil {
 		return errParamNil("item")
@@ -118,12 +148,11 @@ func (editing *RepositoryEditing) saveItem(item *Item) error {
 	}
 	session := editing.currentRep.getSession()
 	if session == nil {
-		return errSessionNil(editing.currentRep.dbName)
+		return errSessionNil(editing.currentRep.name)
 	}
 	defer session.Close()
 
-	db := session.DB(editing.currentRep.dbName)
-	coll := db.C("items")
+	coll := session.DB(editing.currentRep.dbName).C("items")
 	count,err := coll.FindId(item.Id).Count()
 	if err != nil {
 		return err
