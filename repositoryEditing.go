@@ -101,6 +101,24 @@ func (editing *repEditing) SaveTemplateEntry(entry *TemplateEntry) error {
 	return nil
 }
 
+func (editing *repEditing) GetTemplateEntry(id ID) (*TemplateEntry, error) {
+	session := editing.currentRep.getSession()
+	if session == nil {
+		return nil, errSessionNil(editing.currentRep.name)
+	}
+	defer session.Close()
+	coll := session.DB(editing.currentRep.dbName).C("templates")
+	var entry TemplateEntry
+	err := coll.FindId(id).One(&entry)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			return nil,nil
+		}
+		return nil,err
+	}
+	return &entry,nil
+}
+
 // ChildTemplateEntries get the child template entries
 func (editing *repEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
 	session := editing.currentRep.getSession()

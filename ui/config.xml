@@ -5,7 +5,7 @@
     <connStrings>
         <add name="core" type="mongodb" connString="mongodb://localhost"/>
         <add name="master" type="mongodb" connString="mongodb://localhost"/>
-        <add name="web" type="web" connString="mongodb://localhost"/>
+        <add name="web" type="mongodb" connString="mongodb://localhost"/>
     </connStrings>
     <!-- Application setting -->
     <settings>

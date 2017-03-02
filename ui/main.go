@@ -30,5 +30,6 @@ func main() {
 		wecms.RegRepository(web)
 		return nil
 	})
+	wemvc.SetRootDir("E:\\Apps\\gopath\\src\\github.com\\Simbory\\wecms\\ui")
 	wemvc.Run(8080)
 }
