@@ -144,9 +144,9 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 	}
 }
 
-func (rep *Repository) Editing(user *User) *RepositoryEditing {
+func (rep *Repository) Editing(user *User) *repEditing {
 	if user.CanDev() {
-		return &RepositoryEditing{rep, user.UserName}
+		return &repEditing{rep, user.UserName}
 	}
 	return nil
 }

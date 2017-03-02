@@ -8,12 +8,12 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-type RepositoryEditing struct {
+type repEditing struct {
 	currentRep  *Repository
 	currentUser string
 }
 
-func (editing *RepositoryEditing) saveTemplate(t *Template) error {
+func (editing *repEditing) saveTemplate(t *Template) error {
 	if t == nil {
 		return errParamNil("t")
 	}
@@ -57,7 +57,7 @@ func (editing *RepositoryEditing) saveTemplate(t *Template) error {
 	return nil
 }
 
-func (editing *RepositoryEditing) SaveTemplate(t *Template) error {
+func (editing *repEditing) SaveTemplate(t *Template) error {
 	err := editing.saveTemplate(t)
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func (editing *RepositoryEditing) SaveTemplate(t *Template) error {
 	return nil
 }
 
-func (editing *RepositoryEditing) SaveTemplateEntry(entry *TemplateEntry) error {
+func (editing *repEditing) SaveTemplateEntry(entry *TemplateEntry) error {
 	if entry == nil {
 		return errParamNil("entry")
 	}
@@ -101,7 +101,8 @@ func (editing *RepositoryEditing) SaveTemplateEntry(entry *TemplateEntry) error 
 	return nil
 }
 
-func (editing *RepositoryEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
+// ChildTemplateEntries get the child template entries
+func (editing *repEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
 	session := editing.currentRep.getSession()
 	if session == nil {
 		return nil, errSessionNil(editing.currentRep.name)
@@ -120,7 +121,7 @@ func (editing *RepositoryEditing) ChildTemplateEntries(parentId ID) ([]*Template
 }
 
 // saveItem save the item data to mongodb
-func (editing *RepositoryEditing) saveItem(item *Item) error {
+func (editing *repEditing) saveItem(item *Item) error {
 	if item == nil {
 		return errParamNil("item")
 	}
@@ -165,7 +166,7 @@ func (editing *RepositoryEditing) saveItem(item *Item) error {
 	return nil
 }
 
-func (editing *RepositoryEditing) SaveItem(item *Item) error {
+func (editing *repEditing) SaveItem(item *Item) error {
 	err := editing.saveItem(item)
 	if err != nil {
 		return err
@@ -180,7 +181,7 @@ func (editing *RepositoryEditing) SaveItem(item *Item) error {
 	return nil
 }
 
-func (editing *RepositoryEditing) MoveItem(item *Item, newParent ID) error {
+func (editing *repEditing) MoveItem(item *Item, newParent ID) error {
 	if item == nil {
 		return errParamNil("item")
 	}
