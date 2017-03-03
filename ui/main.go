@@ -4,7 +4,7 @@ import (
 	"github.com/Simbory/wemvc"
 	_ "github.com/Simbory/wecms/ui/controllers"
 	"github.com/Simbory/wecms"
-	_ "github.com/Simbory/wecms/ui/areas/wecms"
+	_ "github.com/Simbory/wecms/ui/wecms"
 )
 
 func main() {
