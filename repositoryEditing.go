@@ -8,12 +8,12 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-type repEditing struct {
+type RepEditing struct {
 	currentRep  *Repository
 	currentUser string
 }
 
-func (editing *repEditing) saveTemplate(t *Template) error {
+func (editing *RepEditing) saveTemplate(t *Template) error {
 	if t == nil {
 		return errParamNil("t")
 	}
@@ -57,7 +57,7 @@ func (editing *repEditing) saveTemplate(t *Template) error {
 	return nil
 }
 
-func (editing *repEditing) SaveTemplate(t *Template) error {
+func (editing *RepEditing) SaveTemplate(t *Template) error {
 	err := editing.saveTemplate(t)
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func (editing *repEditing) SaveTemplate(t *Template) error {
 	return nil
 }
 
-func (editing *repEditing) SaveTemplateEntry(entry *TemplateEntry) error {
+func (editing *RepEditing) SaveTemplateEntry(entry *TemplateEntry) error {
 	if entry == nil {
 		return errParamNil("entry")
 	}
@@ -101,7 +101,7 @@ func (editing *repEditing) SaveTemplateEntry(entry *TemplateEntry) error {
 	return nil
 }
 
-func (editing *repEditing) GetTemplateEntry(id ID) (*TemplateEntry, error) {
+func (editing *RepEditing) GetTemplateEntry(id ID) (*TemplateEntry, error) {
 	session := editing.currentRep.getSession()
 	if session == nil {
 		return nil, errSessionNil(editing.currentRep.name)
@@ -120,7 +120,7 @@ func (editing *repEditing) GetTemplateEntry(id ID) (*TemplateEntry, error) {
 }
 
 // ChildTemplateEntries get the child template entries
-func (editing *repEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
+func (editing *RepEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, error) {
 	session := editing.currentRep.getSession()
 	if session == nil {
 		return nil, errSessionNil(editing.currentRep.name)
@@ -139,7 +139,7 @@ func (editing *repEditing) ChildTemplateEntries(parentId ID) ([]*TemplateEntry, 
 }
 
 // saveItem save the item data to mongodb
-func (editing *repEditing) saveItem(item *Item) error {
+func (editing *RepEditing) saveItem(item *Item) error {
 	if item == nil {
 		return errParamNil("item")
 	}
@@ -184,7 +184,7 @@ func (editing *repEditing) saveItem(item *Item) error {
 	return nil
 }
 
-func (editing *repEditing) SaveItem(item *Item) error {
+func (editing *RepEditing) SaveItem(item *Item) error {
 	err := editing.saveItem(item)
 	if err != nil {
 		return err
@@ -199,7 +199,7 @@ func (editing *repEditing) SaveItem(item *Item) error {
 	return nil
 }
 
-func (editing *repEditing) MoveItem(item *Item, newParent ID) error {
+func (editing *RepEditing) MoveItem(item *Item, newParent ID) error {
 	if item == nil {
 		return errParamNil("item")
 	}

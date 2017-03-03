@@ -21,7 +21,11 @@ type Repository struct {
 // getSession clone a new mgo session from the main session
 func (rep *Repository) getSession() *mgo.Session {
 	if rep.session == nil {
-		return nil
+		s,err := mgo.Dial(rep.conn)
+		if err != nil {
+			return nil
+		}
+		rep.session = s
 	}
 	return rep.session.Clone()
 }
@@ -144,9 +148,9 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 	}
 }
 
-func (rep *Repository) Editing(user *User) *repEditing {
+func (rep *Repository) Editing(user *User) *RepEditing {
 	if user.CanDev() {
-		return &repEditing{rep, user.UserName}
+		return &RepEditing{rep, user.UserName}
 	}
 	return nil
 }
