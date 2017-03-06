@@ -3,15 +3,13 @@ package wecms
 import "time"
 
 type TemplateField struct {
-	Id              ID
-	Name            string
-	DisplayTitle    string
-	FieldType       string
-	Mandatory       bool
-	ValidationRegex string
-	DefaultValue    string
-
-	section *TemplateSection
+	Name         string
+	DisplayTitle string
+	FieldType    string
+	Mandatory    bool
+	Validation   string
+	DefaultValue string
+	Section      string
 }
 
 type TemplateSection struct {
@@ -25,7 +23,6 @@ func (s *TemplateSection) GetField(name string) *TemplateField {
 	}
 	for _, f := range s.Fields {
 		if f.Name == name {
-			f.section = s
 			return f
 		}
 	}
@@ -45,7 +42,7 @@ type Template struct {
 	Sections   []*TemplateSection
 }
 
-func (t *Template) GetSection(name string) *TemplateSection {
+func (t *Template) GetSection(name string) Section {
 	if len(t.Sections) == 0 {
 		return nil
 	}
