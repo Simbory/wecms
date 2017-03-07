@@ -42,7 +42,7 @@ type Template struct {
 	Sections   []*TemplateSection
 }
 
-func (t *Template) GetSection(name string) Section {
+func (t *Template) GetSection(name string) *TemplateSection {
 	if len(t.Sections) == 0 {
 		return nil
 	}

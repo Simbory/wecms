@@ -52,9 +52,11 @@ func (prop *tempProperty) Template() *Template {
 	return prop.template
 }
 
+/*
 func (prop *tempProperty) Section() Section {
 	return prop.Template().GetSection(prop.PSection)
 }
+*/
 
 func (prop *tempProperty) Value(item *Item) string {
 	if item != nil && prop.Template().Id.Eq(item.Template().Id) {
