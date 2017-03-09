@@ -45,7 +45,7 @@ func TestRepository_SaveTemplate(t *testing.T) {
 	temp := &Template{
 		Id: testTemplateId,
 		Name: "TestTemplate",
-		Sections: []*TemplateSection{
+		Properties: []*TemplateSection{
 			{
 				Name: "Content",
 				Fields: []*TemplateField{
@@ -87,6 +87,6 @@ func TestRepository_GetTemplate(t *testing.T) {
 	if tmp == nil {
 		t.Fatal("cannot find template by id:" + string(testTemplateId))
 	} else {
-		println(tmp.GetField("Body Content").Id)
+		println(tmp.GetProperty("Body Content").Id)
 	}
 }

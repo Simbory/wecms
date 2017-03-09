@@ -54,6 +54,8 @@ func (editing *RepEditing) saveTemplate(t *Template) error {
 			return err
 		}
 	}
+	t.bases = nil
+	t.ancestors = nil
 	return nil
 }
 
@@ -62,7 +64,7 @@ func (editing *RepEditing) SaveTemplate(t *Template) error {
 	if err != nil {
 		return err
 	}
-	editing.currentRep.templateCache[t.Id] = t
+	t.rep.templateCache[t.Id] = t
 	return nil
 }
 

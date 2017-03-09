@@ -9,10 +9,9 @@ type Property interface {
 	DefaultValue() string
 	Template() *Template
 	Section() Section
-	Value(item *Item) string
 }
 
-type tempProperty struct {
+type property struct {
 	PName         string `bson:"name" json:"name" xml:"name" field:"name"`
 	PDisplayTitle string `bson:"display_title" json:"display_title" xml:"display_title" field:"display_title"`
 	PType         string `bson:"type" json:"type" xml:"type" field:"type"`
@@ -24,51 +23,34 @@ type tempProperty struct {
 	template *Template
 }
 
-func (prop *tempProperty) Name() string {
+func (prop *property) Name() string {
 	return prop.PName
 }
 
-func (prop *tempProperty) DisplayTitle() string {
+func (prop *property) DisplayTitle() string {
 	return prop.PDisplayTitle
 }
 
-func (prop *tempProperty) Type() string {
+func (prop *property) Type() string {
 	return prop.PType
 }
 
-func (prop *tempProperty) Mandatory() bool {
+func (prop *property) Mandatory() bool {
 	return prop.PMandatory
 }
 
-func (prop *tempProperty) Validation() string {
+func (prop *property) Validation() string {
 	return prop.PValidation
 }
 
-func (prop *tempProperty) DefaultValue() string {
+func (prop *property) DefaultValue() string {
 	return prop.PDefaultValue
 }
 
-func (prop *tempProperty) Template() *Template {
+func (prop *property) Template() *Template {
 	return prop.template
 }
 
-/*
-func (prop *tempProperty) Section() Section {
+func (prop *property) Section() Section {
 	return prop.Template().GetSection(prop.PSection)
-}
-*/
-
-func (prop *tempProperty) Value(item *Item) string {
-	if item != nil && prop.Template().Id.Eq(item.Template().Id) {
-		if len(item.Values) > 0 {
-			for _, value := range item.Values {
-				if value.FieldName == prop.Name() {
-					return value.Value
-				}
-			}
-		}
-		return prop.DefaultValue()
-	} else {
-		return ""
-	}
 }

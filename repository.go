@@ -47,6 +47,9 @@ func (rep *Repository) getTemplate(id ID) (*Template, error) {
 		}
 		return nil, err
 	}
+	if t != nil {
+		t.rep = rep
+	}
 	return t, nil
 }
 
@@ -86,6 +89,9 @@ func (rep *Repository) getItem(id ID) (*Item, error) {
 			return nil, nil
 		}
 		return nil, err
+	}
+	if item != nil {
+		item.currentRep = rep
 	}
 	return item, nil
 }
@@ -139,6 +145,8 @@ func (rep *Repository) getChildItems(parentId ID) ([]*Item, error) {
 			newItem,err := rep.GetItem(item.Id)
 			if newItem == nil || err != nil {
 				continue
+			} else {
+				newItem.currentRep = rep
 			}
 			results = append(results, newItem)
 		}

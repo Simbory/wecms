@@ -1,16 +1,11 @@
 package wecms
 
-type ItemValue struct {
-	FieldName string
-	Value     string
-}
-
 type Item struct {
 	Id         ID `bson:"_id"`
 	Name       string
 	TemplateId ID
 	ParentId   ID
-	Values     []*ItemValue
+	Values     map[string]string
 
 	currentRep *Repository
 	children   []*Item
@@ -63,23 +58,14 @@ func (item *Item) Value(fieldName string) string {
 	if template == nil {
 		return ""
 	}
-	field := template.GetField(fieldName)
+	field := template.GetProperty(fieldName)
 	if field == nil {
 		return ""
 	}
-	var value string
-	var got bool
-	if len(item.Values) > 0 {
-		for _, valueSetting := range item.Values {
-			if valueSetting.FieldName == fieldName {
-				got = true
-				value = valueSetting.Value
-				break
-			}
+	for key, value := range item.Values {
+		if key == fieldName {
+			return value
 		}
 	}
-	if !got {
-		return field.DefaultValue
-	}
-	return value
+	return field.DefaultValue()
 }
